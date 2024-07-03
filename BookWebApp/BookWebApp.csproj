@@ -9,11 +9,12 @@
   <ItemGroup>
     <None Include="Components\BookSystem\BookSystem.sln" />
     <None Include="Components\BookSystem\BookSystem\BookSystem.csproj" />
+    <None Include="wwwroot\Data\testdata.csv" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Components\BookSystem\BookSystem\bin\Release\net8.0\" />
-    <Folder Include="Components\Data\" />
+    <Folder Include="wwwroot\Data\" />
   </ItemGroup>
 
   <ItemGroup>

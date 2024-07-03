@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -114,30 +115,35 @@ namespace BookSystem
         }
         #endregion
 
-        public Review Parse(string text)
+        public static Review Parse(string text)
         {
-            string pattern = @".,.,.,.,.";
-            Regex regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            if (regex.IsMatch(text))
+
+            
+                string[] data = text.Split(',');
+
+                string isbn = data[0];
+                string title = data[1];
+                string author = data[2];
+                string reviewername = data[3];
+                RatingType rating = (RatingType)int.Parse(data[4]) - 1;
+                string comment = data[5];
+            
+            //i don't think theres any other ways to screw up formatting that isn't already handled by the classes
+            if (data.Length > 6)
             {
-                text = text.Trim();
+                throw new FormatException($"invalid format (too many commas) {text}");
             }
-            else
+
+            for(int i = 0; i<6; i++)
             {
-                throw new ArgumentException("This is not an acceptable format");
+                if (data[i] ==""){
+                    throw new FormatException($"invalid format (a data field is blank) {text}");
+                }
             }
 
-            string[] data = text.Split(',');
-
-            string isbn = data[0];
-            string title = data[1];
-            string author = data[2];
-            string reviewername = data[3];
-            RatingType rating = (RatingType)int.Parse(data[4]);
-            string comment = data[5];
-
-
-            return new Review(isbn, title, author, reviewername, rating, comment);
+            Review a = new Review(isbn, title, author, reviewername, rating, comment);
+            
+            return a;
         }
 
     }

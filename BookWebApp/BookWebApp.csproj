@@ -13,8 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Components\BookSystem\BookSystem\bin\Release\net8.0\" />
-    <Folder Include="Components\BookSystem\BookSystem\obj\Release\net8.0\refint\" />
-    <Folder Include="Components\BookSystem\BookSystem\obj\Release\net8.0\ref\" />
+    <Folder Include="Components\Data\" />
   </ItemGroup>
 
   <ItemGroup>

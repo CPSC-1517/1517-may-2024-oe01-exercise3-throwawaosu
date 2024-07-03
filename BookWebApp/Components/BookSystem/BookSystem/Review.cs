@@ -10,9 +10,10 @@ namespace BookSystem
 {
     public class Review
     {
+        private string _Author;
         private string _Comment;
         private string _ISBN;
-        private Reviewer _Reviewer;
+        private string _Reviewer;
         private string _Title;
         private RatingType _Rating;
         //idk why this is not included in the diagram :D 
@@ -63,31 +64,37 @@ namespace BookSystem
             }
         }
 
-        public Reviewer Reviewer
+        public string Reviewer
         {
             get { return _Reviewer; }
-            set 
+            set
             {
-                try
+                if (string.IsNullOrWhiteSpace(value))
                 {
-
-                    if (value == null)
-                    {
-                        throw new ArgumentException();
-                    }
-                    _Reviewer = value;
-                    
+                    throw new ArgumentException("reviewer *is required*");
                 }
-                catch
-                {
-                    throw new ArgumentException("Reviewer *is required*"); 
-                }
-                    
+                _Reviewer = value;
             }
         }
+
+
+        public string Author
+        {
+            get { return _Author; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Author *is required*");
+                }
+                _Author = value;
+            }
+        }
+
+
         #endregion
         #region constructor
-        public Review(string isbn, string title, Reviewer reviewer, RatingType rating, string comment)
+        public Review(string isbn, string title, string author, string reviewer, RatingType rating, string comment)
         {
 
                 
@@ -96,7 +103,7 @@ namespace BookSystem
                 Comment = comment;
                 Reviewer = reviewer;
                 Rating = rating;
-            
+                Author = author;
 
         }
         #endregion 
@@ -124,17 +131,13 @@ namespace BookSystem
 
             string isbn = data[0];
             string title = data[1];
-            string reviewername = data[2];
-            RatingType rating = (RatingType)int.Parse(data[3]);
-            string comment = data[4];
+            string author = data[2];
+            string reviewername = data[3];
+            RatingType rating = (RatingType)int.Parse(data[4]);
+            string comment = data[5];
 
-            string[] name = reviewername.Split(' ');
 
-            string firstname = name[0];
-            string lastname = name[1];
-
-            Reviewer reviewer = new Reviewer(firstname, lastname, "ICouldNotFindTheSuppliedBookSystemSoIhaveToDoThisLol@gmail.com", "");
-            return new Review(isbn, title, reviewer, rating, comment);
+            return new Review(isbn, title, author, reviewername, rating, comment);
         }
 
     }

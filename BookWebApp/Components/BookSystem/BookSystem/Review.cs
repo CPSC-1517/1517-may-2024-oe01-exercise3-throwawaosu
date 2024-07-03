@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BookSystem
@@ -101,13 +103,38 @@ namespace BookSystem
         #region methods
         public override string ToString()
         {
-            return $"{ISBN},{Reviewer},{Rating},{Comment}";
+            return $"{ISBN},{Title},{Reviewer},{Rating},{Comment}";
         }
         #endregion
 
-        public string Parse(string text)
+        public Review Parse(string text)
         {
+            string pattern = @".,.,.,.,.";
+            Regex regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            if (regex.IsMatch(text))
+            {
+                text = text.Trim();
+            }
+            else
+            {
+                throw new ArgumentException("This is not an acceptable format");
+            }
 
+            string[] data = text.Split(',');
+
+            string isbn = data[0];
+            string title = data[1];
+            string reviewername = data[2];
+            RatingType rating = (RatingType)int.Parse(data[3]);
+            string comment = data[4];
+
+            string[] name = reviewername.Split(' ');
+
+            string firstname = name[0];
+            string lastname = name[1];
+
+            Reviewer reviewer = new Reviewer(firstname, lastname, "ICouldNotFindTheSuppliedBookSystemSoIhaveToDoThisLol@gmail.com", "");
+            return new Review(isbn, title, reviewer, rating, comment);
         }
 
     }

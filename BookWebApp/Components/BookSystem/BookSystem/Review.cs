@@ -110,7 +110,7 @@ namespace BookSystem
         #region methods
         public override string ToString()
         {
-            return $"{ISBN},{Title},{Reviewer},{Rating},{Comment}";
+            return $"{ISBN},{Title},{Author},{Reviewer},{Rating},{Comment}";
         }
         #endregion
 

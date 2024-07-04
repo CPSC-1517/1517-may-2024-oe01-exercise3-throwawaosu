@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="MudBlazor" Version="7.0.0" />
   </ItemGroup>
 
 </Project>

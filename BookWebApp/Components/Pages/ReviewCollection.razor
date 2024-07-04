@@ -9,7 +9,7 @@
 @inject IDialogService DialogService
  <!-- yes this is modifed from your stuff (it doesn't work regardless)-->
 
- @testvar 
+
 <MudText Typo="Typo.h3">Review Collection</MudText>
 <MudForm Class="mt-8" @ref="form" @bind-Errors="errors">
     <MudGrid>
@@ -125,7 +125,7 @@
     private string rating = string.Empty;
     private string comment = string.Empty;
     private string errortext = string.Empty;
-    private string testvar = string.Empty;
+
     private Review review = null;
     private MudForm form = new();
     private string[] errors = { };
@@ -157,7 +157,7 @@
 
     private void AddReview()
     {
-        testvar = "A";
+
         errorMessages.Clear();
         form.Validate();
         errortext = "";

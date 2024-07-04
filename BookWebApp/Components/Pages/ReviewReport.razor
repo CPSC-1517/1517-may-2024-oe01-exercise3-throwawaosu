@@ -1,0 +1,105 @@
+﻿@page "/ReviewReport"
+@attribute [StreamRendering]
+
+<PageTitle>Review Report</PageTitle>
+<title> Review Report </title>
+<h1>Review Report</h1>
+
+
+
+@if (reviews == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Reviewer</th>
+                <th>Rating</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < reviews.Count; i++)
+            {
+                //for each was being annoying 
+                <tr>
+                    <td>@reviews[i].Title</td>
+                    <td>@reviews[i].Author</td>
+                    <td>@reviews[i].Reviewer</td>
+                    <td>@reviews[i].Rating</td>
+                    <td>@reviews[i].Comment</td>
+                </tr>
+
+                if(reviews.Count == 0)
+                {
+                    <p>No data found!</p>
+                }
+            }
+
+            
+            
+
+        </tbody>
+    </table>
+
+    @errortext
+}
+
+
+@code {
+    // yes i did just reuse the weather code:D 
+    private List<string> errorMessages = [];
+    string errortext = "";
+    public List<Review> reviews = new List<Review> { };
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await Task.Delay(500);
+
+        var file = "wwwroot/Data/testdata.csv";
+
+        using (var reader = new StreamReader(file))
+        {
+
+            try
+            {
+                errorMessages.Clear();
+                errortext = "";
+                string line;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    reviews.Add(Review.Parse(line));
+
+                }  
+
+            } catch (Exception e)
+            {
+
+                errorMessages.Add(GetInnerException(e).Message);
+                foreach (string text in errorMessages)
+                {
+                    errortext += $"DATA ERROR: '{text}' \n LOADING FAILED";
+                }
+            }
+
+            
+        }
+
+    }
+    private Exception GetInnerException(Exception e)
+    {
+
+        while (e.InnerException != null)
+            e = e.InnerException;
+        return e;
+    }
+
+    
+}

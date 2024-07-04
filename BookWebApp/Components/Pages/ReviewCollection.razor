@@ -1,0 +1,211 @@
+﻿@page "/ReviewCollection"
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+<PageTitle>Review Collection</PageTitle>
+@inject IJSRuntime JSRunTime
+@inject IDialogService DialogService
+ <!-- yes this is modifed from your stuff (it doesn't work regardless)-->
+
+
+<MudText Typo="Typo.h3">Review Collection</MudText>
+<MudForm Class="mt-8" @ref="form" @bind-Errors="errors">
+    <MudGrid>
+        <MudItem xs="12" sm="6">
+            <MudCard Outlined="true">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h6">Book Info</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudTextField Variant="Variant.Outlined"
+                                  T="string"
+                                  Label="ISBN"
+                                  @bind-Value="@isbn"
+                                  Immediate="true"
+                                  Required
+                                  RequiredError="ISBN is required." />
+                    <MudTextField Variant="Variant.Outlined"
+                                  T="string"
+                                  Label="Title"
+                                  @bind-Value="@title"
+                                  Immediate="true"
+                                  Required
+                                  RequiredError="Title is required." />
+
+                    <MudSelect T="string"
+                               Label="Author"
+                               Variant="Variant.Outlined"
+                               @bind-Value="@author"
+                               Immediate="true"
+                               Required
+                               RequiredError="Author is required.">
+                        @foreach (string value in authorList)
+                        {
+                            <MudSelectItem Value="@value" />
+                        }
+                    </MudSelect>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudCard Outlined="true">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h6">Address Info</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+
+                    <MudTextField Variant="Variant.Outlined"
+                                  T="string"
+                                  Label="Street Name"
+                                  @bind-Value="@reviewer"
+                                  Immediate="true"
+                                  Required
+                                  RequiredError="Reviewer is required." />
+                    <MudSelect T="string"
+                               Label="Rating Type"
+                               Variant="Variant.Outlined"
+                               @bind-Value="@rating"
+                               Immediate="true"
+                               Required
+                               RequiredError="Rating type is required.">
+                        @foreach (string value in ratingList)
+                        {
+                            <MudSelectItem Value="value" />
+                        }
+                    </MudSelect>
+                    <MudTextField Variant="Variant.Outlined"
+                                  T="string"
+                                  Label="Comment"
+                                  @bind-Value="@comment"
+                                  Immediate="true"
+                                  Required
+                                  RequiredError="Comment is required." />
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12">
+            <MudPaper Class="d-flex flex-wrap justify-center" Elevation="0">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddReview">Add Review</MudButton>
+                <MudSpacer />
+                <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="ClearForm">Clear</MudButton>
+                <MudSpacer />
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary">
+                    <MudNavLink Href="/ReviewReport">
+                    View Report
+                    </MudNavLink>
+                </MudButton>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+<MudPaper Class="pt-4" Elevation="0">
+    @if (!string.IsNullOrWhiteSpace(successMessage))
+    {
+        <MudText Typo="Typo.body2" Color="Color.Success">@successMessage</MudText>
+    }
+    @foreach (var error in errors)
+    {
+        <MudText Typo="Typo.body2" Color="Color.Error">@error</MudText>
+    }
+    @foreach (var error in errorMessages)
+    {
+        <MudText Typo="Typo.body2" Color="Color.Error">@error</MudText>
+    }
+</MudPaper>
+@errortext
+@code {
+    private List<string> authorList= [];
+    private List<string> ratingList = [];
+    private string isbn = string.Empty;
+    private string title = string.Empty;
+    private string author = string.Empty;
+    private string reviewer = string.Empty;
+    private string rating = string.Empty;
+    private string comment = string.Empty;
+    private string errortext = string.Empty;
+
+    private Review review = null;
+    private MudForm form = new();
+    private string[] errors = { };
+    private List<string> errorMessages = [];
+    private string successMessage = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        authorList = new List<string>
+        {
+        "Karen Miller",
+        "Adrian Tchaikovsky",
+        "Cixin Liu"
+        };
+
+
+        ratingList = new List<string>
+        {
+        "MustHave",
+        "Buy",
+        "Pass",
+        "EasyReading",
+        "Entertaining",
+        "SummerReading"};
+
+        base.OnInitialized();
+
+    }
+
+    private void AddReview()
+    {
+
+        errorMessages.Clear();
+        form.Validate();
+        errortext = "";
+        if (form.IsValid)
+        {
+            try
+            {
+
+                review = new Review(isbn,title,author,reviewer,(RatingType)Enum.Parse(typeof(RatingType), rating),comment);
+                string fileName = @"wwwroot/Data/testdata.csv";
+                string line = $"{review.ToString()}\n";
+                File.AppendAllText(fileName, line);
+                successMessage = $"{title} review added successfully!";
+            }
+            catch (Exception ex)
+            {
+                errorMessages.Add(GetInnerException(ex).Message);
+                foreach (string text in errorMessages)
+                {
+                    errortext += $"ERROR: '{text}' \n SAVING FAILED";
+                }
+            }
+        }
+        else
+        {
+           
+            
+        }
+    }
+
+
+    private async void ClearForm()
+    {
+
+            await form.ResetAsync();
+            errorMessages.Clear();
+            successMessage = string.Empty;
+
+    }
+
+    private Exception GetInnerException(Exception ex)
+    {
+
+        while (ex.InnerException != null)
+            ex = ex.InnerException;
+        return ex;
+    }
+}
+
+
+

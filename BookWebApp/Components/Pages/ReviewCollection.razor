@@ -5,5 +5,105 @@
 <h1>Review Collection</h1>
 
 
-<EditForm EditContext="editContext" OnValidSubmit="Submit" FormName="ISBN"/>
+<EditForm Model="@ReviewData" OnSubmit="@Submit"  FormName="ReviewForm">
+	
+	<h2> Book </h2>
+	<div>ISBN</div>
+	<InputText @bind-Value="ReviewData.isbn" />
+	<div>Title</div>
+	<InputText @bind-Value="ReviewData.title" />
+	<div>Author</div>
+	<InputSelect @bind-Value="ReviewData.author">
+		<option value="default"></option>
+		@foreach (var a in Author.baseAuthors())
+		{
+			<option value=@a.Name>@a.Name</option>
+		}
+	</InputSelect>
 
+	<h2> Review </h2>
+	<div>Reviewer</div>
+	<InputText @bind-Value="ReviewData.reviewer" />
+	<h2> Rating </h2>
+	<br /> <InputSelect @bind-Value="ReviewData.rating">
+		<option value="default"></option>
+		@foreach (var t in Enum.GetValues(typeof(RatingType)))
+		{
+			<option value=@t>@t</option>
+		}
+	</InputSelect>
+
+	<div>Comment</div>
+	<InputText @bind-Value="ReviewData.comment" /><br />
+	
+	<button class="btn btn-primary" type="submit">Submit</button>
+	<button class="btn btn-secondary" type="reset">Reset</button>
+</EditForm>
+
+<p style="margin-top: 20px;">@FormCompletedText</p>
+
+
+
+
+
+
+
+@code{
+	public Data ReviewData { get; set; } = new Data();
+	public string FormCompletedText { get; set; } = "";
+	public string errorText{ get; set; } = "";
+
+	public void Submit()
+	{
+		FormCompletedText = $"User {ReviewData.isbn} logged in.";
+		
+
+		bool valid = true;
+
+		if (string.IsNullOrWhiteSpace(ReviewData.isbn)) { valid = false; errorText += "INVALID ISBN (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(ReviewData.title)) { valid = false; errorText += "INVALID TITLE (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(ReviewData.author)) { valid = false; errorText += "INVALID ISBN (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(ReviewData.reviewer)) { valid = false; errorText += "INVALID REVIEWER (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(ReviewData.rating)) { valid = false; errorText += "INVALID RATING (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(ReviewData.comment)) { valid = false; errorText += "INVALID COMMENT (MISSING)\n"; }
+
+		/// 978-1529091427,The Tiger and the Wolf,Adrian Tchaikovsky,don welch,Buy,Adrian's imagination is at it again. Mixing adventure and magic into an endearing tale.
+		//	return $"{ISBN},{Title},{Author},{Reviewer},{Rating},{Comment}";
+		Console.WriteLine($"{ReviewData.isbn},{ReviewData.title},{ReviewData.author},{ReviewData.reviewer},{ReviewData.rating},{ReviewData.comment}");
+		ReviewData = new Data();
+
+	}
+
+	public class Data
+	{
+		public string isbn { get; set; } = "";
+		public string title { get; set; } = "";
+		public string author { get; set; } = "";
+		public string reviewer { get; set; } = "";
+		public string rating { get; set; } = "";
+		public string comment { get; set; } = "";
+	}
+
+	/*
+	private void Validate()
+	{
+		bool valid = true;
+		
+		if (string.IsNullOrWhiteSpace(isbn)) { valid = false; errorText += "INVALID ISBN (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(title)) { valid = false; errorText += "INVALID TITLE (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(author)) { valid = false; errorText += "INVALID ISBN (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(reviewer)) { valid = false; errorText += "INVALID REVIEWER (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(rating)) { valid = false; errorText += "INVALID RATING (MISSING)\n"; }
+		if (string.IsNullOrWhiteSpace(comment)) { valid = false; errorText += "INVALID COMMENT (MISSING)\n"; }
+
+		/// 978-1529091427,The Tiger and the Wolf,Adrian Tchaikovsky,don welch,Buy,Adrian's imagination is at it again. Mixing adventure and magic into an endearing tale.
+		//	return $"{ISBN},{Title},{Author},{Reviewer},{Rating},{Comment}";
+		Console.WriteLine($"{isbn},{title},{author},{reviewer},{rating},{comment}");
+		
+
+		
+
+		
+	}
+	*/
+}

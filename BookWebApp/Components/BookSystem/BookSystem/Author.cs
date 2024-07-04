@@ -5,118 +5,59 @@ namespace BookSystem
 {
     public class Author
     {
-        private string _ContactUrl;
-        private string _FirstName;
-        private string _LastName;
-        private string _ResidentCity;
-        private string _ResidentCountry;
+        private string _Name;
+        
 
         #region properties
-        public string AuthorName
+
+        public string Name
         {
-            get { return $"{_LastName}, {_FirstName}"; }
-        }
-        public string FirstName
-        {
-            get { return _FirstName; }
+            get { return _Name; }
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException("First name *is required*");
+                    throw new ArgumentNullException("Name *is required*");
                 }
-               
-                _FirstName = value.Trim();
+
+                _Name = value.Trim();
 
             }
         }
-        public string LastName
+        public string Value
         {
-            get { return _LastName; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentNullException("Last name *is required*");
-                }
- 
-                 _LastName = value.Trim();
-                
-            }
+            get { return _Name.Replace(" ", string.Empty); }
         }
-        public string ContactUrl
-        {
-            get { return _ContactUrl; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentNullException("URL is *is required*");
-                }
-                
-                string pattern = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";
-                // stole this straight from stack overflow, the simple regular expression in the readmedid not work
-                // https://stackoverflow.com/a/56128519
-                Regex regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                
-                if (regex.IsMatch(value))
-                {
-                    _ContactUrl = value.Trim();
-                }
-                else
-                {
-                    throw new ArgumentException("This is not an *acceptable url pattern*");
-                }
 
-                
-            }
-        }
-        public string ResidentCity
-        {
-            get { return _ResidentCity; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentNullException("City *is required*");
-                }
-                _ResidentCity = value.Trim();
-            }
-        }
-        public string ResidentCountry
-        {
-            get { return _ResidentCountry; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentNullException("Country *is required*");
-                }
-                _ResidentCountry = value.Trim();
-            }
-        }
+      
 
 
         #endregion
 #region constructor
-        public Author(string firstname, string lastname, string contacturl, string city, string country)
+        public Author(string name)
         {
-                FirstName = firstname;
-                LastName = lastname;
-                ContactUrl = contacturl;
-                ResidentCity = city;
-                ResidentCountry = country;
-            
-            
-
+                Name = name;
         }
 
         #endregion
         #region methods
-        public override string ToString()
+        public static Author[] baseAuthors()
         {
-            return $"{FirstName},{LastName},{ContactUrl},{ResidentCity},{ResidentCountry}";
+            List<Author> authors = new List<Author>();
+
+
+            Author author1 = new Author("Karen Miller");
+            Author author2 = new Author("Adrian Tchaikovsky");
+            Author author3 = new Author("Cixin Liu");
+
+            authors.Add(author1);
+            authors.Add(author2);
+            authors.Add(author3);
+            return authors.ToArray();
+            /// I havea  feeling this is probably where i would need the base classes too bad i can't find them and i cannot be bothered to look 
         }
+
+
         #endregion 
     }
 }

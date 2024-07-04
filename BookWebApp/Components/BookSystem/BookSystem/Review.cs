@@ -125,7 +125,7 @@ namespace BookSystem
                 string title = data[1];
                 string author = data[2];
                 string reviewername = data[3];
-                RatingType rating = (RatingType)int.Parse(data[4]) - 1;
+                RatingType rating = (RatingType)Enum.Parse(typeof(RatingType), data[4]);
                 string comment = data[5];
             
             //i don't think theres any other ways to screw up formatting that isn't already handled by the classes

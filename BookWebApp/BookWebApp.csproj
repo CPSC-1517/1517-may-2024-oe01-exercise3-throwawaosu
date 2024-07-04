@@ -7,14 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\Data\baddata.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Components\BookSystem\BookSystem.sln" />
     <None Include="Components\BookSystem\BookSystem\BookSystem.csproj" />
+    <None Include="wwwroot\Data\baddata.csv" />
     <None Include="wwwroot\Data\testdata.csv" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Components\BookSystem\BookSystem\bin\Release\net8.0\" />
-    <Folder Include="wwwroot\Data\" />
   </ItemGroup>
 
   <ItemGroup>

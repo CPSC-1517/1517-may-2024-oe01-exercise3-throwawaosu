@@ -26,7 +26,7 @@ else
         <tbody>
             @for (int i = 0; i < reviews.Count; i++)
             {
-                
+                //for each was being annoying 
                 <tr>
                     <td>@reviews[i].Title</td>
                     <td>@reviews[i].Author</td>
@@ -46,14 +46,17 @@ else
 
         </tbody>
     </table>
+
+    @errortext
 }
 
 
 @code {
     // yes i did just reuse the weather code:D 
-
+    private List<string> errorMessages = [];
+    string errortext = "";
     public List<Review> reviews = new List<Review> { };
-    
+
     protected override async Task OnInitializedAsync()
     {
         // Simulate asynchronous loading to demonstrate streaming rendering
@@ -66,22 +69,36 @@ else
 
             try
             {
+                errorMessages.Clear();
+                errortext = "";
                 string line;
 
                 while ((line = reader.ReadLine()) != null)
                 {
                     reviews.Add(Review.Parse(line));
-                    /// note to self because this literally cost me no less than 2 hours by itself - append doesn't work with lists (or arrays in webdev for some reason?????)
+
                 }  
 
             } catch (Exception e)
             {
-                Console.WriteLine("error rofl");
+
+                errorMessages.Add(GetInnerException(e).Message);
+                foreach (string text in errorMessages)
+                {
+                    errortext += $"DATA ERROR: '{text}' \n LOADING FAILED";
+                }
             }
 
             
         }
 
+    }
+    private Exception GetInnerException(Exception e)
+    {
+
+        while (e.InnerException != null)
+            e = e.InnerException;
+        return e;
     }
 
     
